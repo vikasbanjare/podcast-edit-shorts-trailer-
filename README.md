@@ -20,10 +20,14 @@ Claude Code loads them automatically when this repository is open.
 [`.claude/skills/premiere-podcast-cutter/`](.claude/skills/premiere-podcast-cutter/SKILL.md)
 
 Give it the EDL and the name of your source sequence. It drives your Premiere Pro MCP server to create one
-named sequence per Short and per trailer, place frame-accurate ranges, add beat markers and reframe to 9:16.
-It reads every cut back to check it, and exports only when you approve.
+named sequence per Short and per trailer. Every camera and mic stays a separate, editable clip on its own track,
+in sync: cameras stacked, the consolidated mix live, individual mics muted as backups. It adds beat markers
+and reframes to 9:16. It reads every cut back to check it, and exports only when you approve.
+It can also write an editable FCP7 XML you import into Premiere directly (File > Import).
 
-- `scripts/build_premiere_plan.py`: EDL to a named, frame-accurate cut plan (seconds, ticks, timecode)
+- `scripts/build_premiere_plan.py`: EDL plus source track layout to a per-track, frame-accurate cut plan
+- `scripts/export_xmeml.py`: cut plan to an importable, editable multitrack XML
+- `examples/layout.example.json`: two cameras, two iso mics and a consolidated mix
 - `references/mcp_tool_map.md`: tool names for the known community Premiere MCP servers, plus an ExtendScript fallback
 
 ## Tests

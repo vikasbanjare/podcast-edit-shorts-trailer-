@@ -30,7 +30,10 @@ If the user's server isn't listed, map by description and confirm each schema. T
 | Frame size 1080x1920 | `set_sequence_settings{sequenceId,settings:{width,height}}` | `set_sequence_resolution` / `set_sequence_settings` | `premiere_create_vertical_version` | ? | `sequence_create` width/height |
 | **Place a range** | `add_to_timeline{sequenceId,projectItemId,trackIndex,time,sourceInPoint,sourceOutPoint,insertMode?,linkAudio?}` | `set_item_in_out{item_id,in_seconds,out_seconds}` then `overwrite_clip{item_id,start_seconds,track_index,audio_track_index}` | `premiere_overwrite_clip{project_item_index,time,video_track_index,audio_track_index}` (set in/out first; `premiere_place_clip` out-point param ?) | `overwrite_clip_to_timeline{projectItemId,trackIndex,startTime,inPoint?,outPoint?}` | set source in/out, then `clip_overwrite{sequenceId,trackType,trackIndex,projectItemId,atTicks}` |
 | **Place many (batch)** | `add_to_timeline_batch{sequenceId,clips:[{projectItemId,trackIndex,time,sourceInPoint,sourceOutPoint,linkAudio}]}` | `add_markers_batch` only (no clip batch found) | – | – | – |
-| Read back clips | `list_sequence_tracks{sequenceId}` | ? (fetch schema: sequence/track listing) | ? | ? | ? |
+| Read back clips | `list_sequence_tracks{sequenceId}` (start/end only, no source in-point or media path) | `list_sequence_tracks` | ? | ? | ? |
+| Add tracks | `add_track` | `add_track` | ? | ? | ? |
+| Mute an audio track | `mute_track{sequenceId,trackIndex,muted}` | `mute_track` | ? | ? | ? |
+| Video without linked audio | `add_to_timeline(_batch)` with `linkAudio:false` | fetch schema; else remove the linked audio clip after placing | ? | ? | ? |
 | Razor | `razor_timeline_at_time{sequenceId?,time,videoTrackIndices?,audioTrackIndices?}` | `razor_all_tracks{time_seconds,track_type}` | `premiere_razor_clip{track_type,track_index,time}` | `razor_all_tracks` | `clip_split{…,atTicks}` (emulated) |
 | Ripple delete | `remove_from_timeline{clipId,sequenceId?,deleteMode:'ripple'}` | `ripple_remove_timeline_ranges{ranges,dry_run}` → apply with token | `premiere_ripple_delete_gap` | `ripple_delete` | `clip_ripple_delete` |
 | Markers | `add_marker{sequenceId,time,name,comment?}` | `add_markers_batch{sequence_id,markers[]}` | `premiere_add_sequence_marker{time,name,comment,color}` | `add_marker` | `markers_add_many` |
@@ -60,6 +63,46 @@ If the user's server isn't listed, map by description and confirm each schema. T
 - All servers need Premiere open with the panel running (CEP servers also need CEP debug mode enabled).
 - Adobe has scheduled CEP's retirement: no new submissions from Dec 2027, off by default from Dec 2028, removed
   Dec 2029. ExtendScript has no removal date. UXP servers (E, F) are the long-term path.
+
+## Read the source layout (read-only)
+
+Track listings from the servers don't include each clip's source in-point or media path, and the cut plan needs
+both. Run this through the raw-script tool (server B: wrap the return as `return __result(...)`) and save the
+JSON output as `layout.json`. It only reads. Untested against a live Premiere build, so check that the output
+lists every camera and mic.
+
+```javascript
+(function () {
+  var name = "SOURCE_SEQUENCE_NAME";
+  var seq = null;
+  for (var i = 0; i < app.project.sequences.numSequences; i++) {
+    if (app.project.sequences[i].name === name) { seq = app.project.sequences[i]; break; }
+  }
+  if (!seq) return JSON.stringify({error: "sequence not found: " + name});
+  function tracks(list) {
+    var out = [];
+    for (var t = 0; t < list.numTracks; t++) {
+      var tr = list[t], clips = [];
+      for (var c = 0; c < tr.clips.numItems; c++) {
+        var cl = tr.clips[c], pi = cl.projectItem;
+        clips.push({name: cl.name, start: cl.start.seconds, end: cl.end.seconds,
+                    "in": cl.inPoint.seconds, out: cl.outPoint.seconds,
+                    project_item_id: pi ? pi.nodeId : null,
+                    media_path: pi && pi.getMediaPath ? pi.getMediaPath() : null});
+      }
+      out.push({index: t, name: tr.name, muted: tr.isMuted ? tr.isMuted() : false, clips: clips});
+    }
+    return out;
+  }
+  return JSON.stringify({sequence: {name: seq.name, id: seq.sequenceID,
+                                    frame_ticks: seq.timebase, width: seq.frameSizeHorizontal,
+                                    height: seq.frameSizeVertical},
+                         video_tracks: tracks(seq.videoTracks), audio_tracks: tracks(seq.audioTracks)});
+})();
+```
+
+Frame rate = 254016000000 / `frame_ticks` (e.g. 10160640000 → 25 fps). A multicam source clip appears as one
+project item per track; that's fine, because it is placed the same way.
 
 ## ExtendScript fallback (raw-script tools only)
 
