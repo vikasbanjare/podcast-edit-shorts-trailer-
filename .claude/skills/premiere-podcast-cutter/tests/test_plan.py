@@ -7,6 +7,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 
 from build_premiere_plan import TICKS_PER_SECOND, build_plan, mirror_tracks, snap, timecode  # noqa: E402
 from export_xmeml import build_xml, pathurl  # noqa: E402
+from edl_to_jsx import build as build_jsx  # noqa: E402
+import json  # noqa: E402
 import xml.etree.ElementTree as ET  # noqa: E402
 
 
@@ -173,6 +175,23 @@ class MultitrackTests(unittest.TestCase):
 
     def test_windows_pathurl(self):
         self.assertEqual(pathurl("C:\\Pod cast\\cam A.mp4"), "file://localhost/C%3A/Pod%20cast/cam%20A.mp4")
+
+
+class JsxTests(unittest.TestCase):
+    def data(self):
+        js = build_jsx(edl(), "test-2", "test2", "test-2_Cuts")
+        start = js.index("var DATA = ") + len("var DATA = ")
+        return js, json.loads(js[start:js.index(";\nvar TPS")])
+
+    def test_shorts_and_trailer_payload(self):
+        js, data = self.data()
+        self.assertEqual(data["source"], "test-2")
+        self.assertEqual([s["name"] for s in data["shorts"]],
+                         ["TEST2_SHORT_01_why-i-quit", "TEST2_SHORT_02_draft_UNVERIFIED"])
+        self.assertEqual(len(data["trailers"]), 1)  # the teaser has a beat without timecodes
+        self.assertEqual([b["start"] for b in data["trailers"][0]["beats"]], [500.0, 100.0])
+        self.assertIn("createSubsequence(true)", js)
+        self.assertIn("setRange(src, oldIn, oldOut)", js)  # source in/out restored
 
 
 if __name__ == "__main__":

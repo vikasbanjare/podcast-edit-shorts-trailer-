@@ -117,6 +117,16 @@ trailer"), run the whole chain:
    sequence, then export each one. Prefer a server tool that waits and verifies the output duration. Report
    every output path and failure. Never upload or publish.
 
+## One-shot build (fastest, recommended when the server has a raw-script tool)
+
+`python3 scripts/edl_to_jsx.py edl.json --source-sequence "<name>" --prefix <EP> -o build.jsx` writes ONE ExtendScript.
+Run it with the server's raw-script tool (server B: wrap it as `return __result(<script>)`). It makes each Short and
+each trailer beat with Premiere's own `createSubsequence`, which keeps every camera and mic track, separate and in
+sync. Shorts get 1080x1920 with the video scaled to fill the frame. The trailer is assembled from its beat
+subsequences in playback order, with markers. Afterwards it restores the source's in/out marks and returns a report
+line per item. Then read back one Short to confirm its tracks and duration, and set the iso mic tracks to muted if
+the server can.
+
 ## Placement modes
 
 | Mode | When | How |
