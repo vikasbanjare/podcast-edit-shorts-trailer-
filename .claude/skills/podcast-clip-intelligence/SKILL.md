@@ -115,6 +115,7 @@ Keep exact dialogue separate from editorial on-screen text.
 - `references/EDL_SCHEMA.md`: EDL JSON for Shorts and trailer beats.
 - `scripts/resolve_and_snap.py`: utterance indices to snapped times, duration band and status flags.
 - `scripts/rank_candidates.py`: gates, weighted score, threshold, de-duplication, ranking and backups.
+- `scripts/transcript_to_utterances.py`: Whisper JSON (word times) or SRT captions to utterances for snapping.
 - `scripts/render_ffmpeg.py`: ffmpeg fallback renderer for verified Shorts and trailers (9:16 centre crop, beat concat).
 - `tests/test_scripts.py`: synthetic tests (`python3 -m unittest discover -s tests -v`).
 - `NOTICE.md`: where adapted rules came from and their licenses.

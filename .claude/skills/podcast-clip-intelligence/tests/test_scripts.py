@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.join(HERE, "..", "scripts"))
 from resolve_and_snap import resolve_all, snap_candidate  # noqa: E402
 from rank_candidates import rank, weighted_score, WEIGHTS  # noqa: E402
 from render_ffmpeg import plan, cut_command, commands_for  # noqa: E402
+from transcript_to_utterances import from_srt, from_whisper  # noqa: E402
 
 
 def words(text, start, step=0.5):
@@ -215,6 +216,35 @@ class RenderPlanTests(unittest.TestCase):
         self.assertIn("scale=1080:1920", cmd[cmd.index("-vf") + 1])
         with self.assertRaises(ValueError):
             cut_command("src.mp4", 5, 5, "o.mp4")
+
+
+class TranscriptTests(unittest.TestCase):
+    SRT = ("1\n00:00:10,000 --> 00:00:12,000\nHost: Aapne job kyun chhodi?\n\n"
+           "2\n00:00:12,500 --> 00:00:16,500\nGuest: Kyunki numbers galat the.\n\n"
+           "3\n00:00:16,500 --> 00:00:18,000\naur koi bol nahi raha tha.\n")
+
+    def test_srt_speakers_and_even_words(self):
+        res = from_srt(self.SRT)
+        self.assertTrue(res["approximate_words"])
+        self.assertEqual([u["speaker"] for u in res["utterances"]], ["Host", "Guest", "Guest"])
+        first = res["utterances"][0]["words"]
+        self.assertEqual([w["w"] for w in first], ["Aapne", "job", "kyun", "chhodi?"])
+        self.assertEqual((first[0]["s"], first[-1]["e"]), (10.0, 12.0))
+
+    def test_srt_offset_and_snap_pipeline(self):
+        res = from_srt(self.SRT, offset=100.0)
+        out = snap_candidate({"id": "x", "start_utt": 0, "end_utt": 1}, res["utterances"], silences=[])
+        self.assertAlmostEqual(out["start"], 110.0 - 0.15, places=2)
+
+    def test_whisper_word_times_kept(self):
+        data = {"segments": [{"start": 1.0, "end": 2.0, "text": " Hello there.", "speaker": "SPEAKER_00",
+                              "words": [{"word": " Hello", "start": 1.0, "end": 1.4},
+                                        {"word": " there.", "start": 1.5, "end": 1.9}]},
+                             {"start": 3.0, "end": 4.0, "text": " no words here"}]}
+        res = from_whisper(data)
+        self.assertEqual(res["utterances"][0]["words"][1], {"w": "there.", "s": 1.5, "e": 1.9})
+        self.assertEqual(res["utterances"][0]["speaker"], "SPEAKER_00")
+        self.assertTrue(res["approximate_words"])  # second segment had no word times
 
 
 if __name__ == "__main__":

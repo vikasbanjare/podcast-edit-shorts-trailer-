@@ -20,6 +20,30 @@ tracks, in sync**, so the editor can switch angles, rebalance mics or swap to an
   muted, so nothing doubles or phases.
 - Camera scratch audio is never placed over the mic tracks (place video without its linked audio).
 
+## End to end from just a sequence name
+
+When the user only names a sequence (for example "test-2 is the full podcast, find the best Shorts and make a
+trailer"), run the whole chain:
+
+1. **Connect, find the sequence, read its layout** (workflow steps 1–3 below).
+2. **Get a transcript on that sequence's timeline**, best option first:
+   - a transcript/caption tool on the MCP server (search its tools for "transcript" or "caption");
+   - word-level Whisper: export the consolidated mix track's audio for the whole sequence, then run
+     faster-whisper or WhisperX with word timestamps (and diarisation if available) locally;
+   - the user exports captions from Premiere's Text panel as an SRT (Transcript → create captions → Captions
+     menu → export SRT). Word times are then approximate.
+
+   Convert it: `python3 ../podcast-clip-intelligence/scripts/transcript_to_utterances.py <file> -o utterances.json`.
+   Get silences from the mix audio with ffmpeg `silencedetect` (noise -35dB, d=0.35) for snapping.
+3. **Pick the moments** with the `podcast-clip-intelligence` skill: map the episode, propose candidates, snap, score,
+   gate and rank. The number of Shorts and trailers comes from the material. Usually one recommended trailer,
+   plus an alternate only when a distinct hook supports it. Show the user Sections A–D (shortlist with reasons,
+   trailer beat order) and **wait for approval** before touching Premiere.
+4. **Verify.** With word-level Whisper times *and* every cut point falling in a detected pause, mark the
+   item `verified: true` with note "auto-verified: word times + silence". With approximate (SRT) times, build
+   the sequences as `*_UNVERIFIED` drafts and ask the user to check the edges in Premiere.
+5. **Cut** (workflow steps 4–9 below) and report sequence by sequence. Export only if asked.
+
 ## Inputs
 
 1. **EDL** in the `podcast-clip-intelligence` format (`references/EDL_SCHEMA.md` in that skill). Only items with
