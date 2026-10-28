@@ -75,7 +75,9 @@ Final-edit times (`final_duration_s`, `final_in_s`) are positions in the finishe
 ## Optional fields
 
 - Clip: `title`, `type`, `category`, `duration_band`, `verified`, `status`, `snap_notes`, `language`, `speaker`,
-  `dialogue`, `dialogue_anchor`, `score`, `aspect_ratio`, `width`, `height`, `subtitle_file`, `burn_subtitles`, `notes`.
+  `dialogue`, `dialogue_anchor`, `score`, `aspect_ratio`, `width`, `height`, `subtitle_file`, `burn_subtitles`, `notes`,
+  `added_value` (the original element added: context card, hook text, reaction cut…), `upload_title` (distinct per clip),
+  `caption_script` (`roman` / `devanagari` / `mixed`), `series` (YouTube Shorts Series name, if any).
 - Trailer: `id`, `concept`, `non_chronological`, `total_runtime_s`, `width`, `height` (e.g. 1080x1920 for a vertical teaser,
   1920x1080 for the episode cold open).
 - Beat: `role` (`cold_open`, `curiosity`, `escalation`, `contrast`, `peak`, `open_loop`, `episode_id`, `close`),

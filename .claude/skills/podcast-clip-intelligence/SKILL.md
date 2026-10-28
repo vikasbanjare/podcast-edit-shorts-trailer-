@@ -13,7 +13,8 @@ speaker meant, and they deliver on the promise of their opening. Never guarantee
 timecodes, dialogue, facts or reactions.
 
 The full brief is `references/editorial_brief.md`. Read it before the first analysis in a session;
-it wins over this summary if they seem to disagree.
+it wins over this summary if they seem to disagree. Also read `references/editing_playbook_2026.md`
+(current platform rules and editing practice, each tagged by evidence strength) before steps 6–8.
 
 ## Inputs and what they allow
 
@@ -46,10 +47,15 @@ Do not claim to have heard, watched or verified media you could not access.
    (only the context needed), payoff, clean ending. Prefer a complete Short over an artificial cliffhanger.
    Give a concrete 9:16 edit plan: reframing, angle changes and punch-ins only at meaningful moments, subtitles
    in the original language with keyword emphasis, B-roll only with an exact concept and purpose, and nothing the
-   footage can't support.
+   footage can't support. Give every Short an **added-value element** (context card, framing hook text, host
+   reaction cut or chaptered storytelling) so it is original under the 2026 YouTube/Instagram rules, plus a distinct
+   title. Default 15–45 s. Captions: every word, 5–7 per line, one accent keyword; choose Roman or Devanagari
+   for Hinglish per audience and flag a human caption pass.
 7. **Design the trailer** as a separate product. Up to three concepts (mystery, high-energy, story-led,
    insight-led, conflict, documentary), recommend one. Flexible beat arc: cold open → curiosity → escalation →
-   contrast → peak → open loop → episode ID → close. Suspense only from real dialogue.
+   contrast → peak → open loop → episode ID → close. Suspense only from real dialogue. Nothing (logo, sting,
+   swell) before the first line; show name after the first curiosity beat; drop music to silence before the key
+   line. Episode cold open (16:9) under ~45 s; vertical teaser 15–30 s. Offer both when the user wants several trailers.
 8. **Write the trailer EDL** beat by beat in playback order with every field in `references/EDL_SCHEMA.md`
    (`trailer_beats`). Say where to cut hard, pause, build music, drop to silence, use reactions/punch-ins,
    place the title and the final beat. Flag non-chronological source material.
@@ -66,6 +72,9 @@ Do not claim to have heard, watched or verified media you could not access.
 - No misleading edits, false implications or rearrangements that change a speaker's position. Do not present a
   position stated-to-refute, a joke or a hypothetical as sincere.
 - Never present paraphrase as an exact quote or fill missing words by guesswork.
+- Never splice separate moments so they play as one continuous statement. Mark every join visibly (angle
+  change, dip, context card) and log it as non-chronological.
+- Disclose any realistic AI-generated visuals or voice. Prefer real footage.
 - Never write a sensational headline that misrepresents the statement.
 - Do not clip content without the rights to use it. Ask whose channel the clips serve if that is unclear.
 
@@ -80,7 +89,8 @@ verification status) ·
 **E** Final trailer EDL (beats in playback order, total runtime) ·
 **F** QC report (timecode confidence, dialogue accuracy, context, attribution, natural edges, hook-to-payoff,
 trailer flow, duplicates, misleading-edit risks, honesty-gate kill log, items needing human verification) ·
-**G** Production priorities (edit-first order with reasons, then backups)
+**G** Production priorities (edit-first order with reasons, then backups; propose a YouTube Shorts Series when
+several clips form one story; one distinct title per clip)
 
 Lead with the best material. Give specific instructions an editor can execute without reinterpretation.
 
@@ -94,6 +104,7 @@ Keep exact dialogue separate from editorial on-screen text.
 
 - `references/editorial_brief.md`: the full editorial brief (authoritative).
 - `references/rubric.md`: gates, weights, duration bands, boundary rules, trailer rules.
+- `references/editing_playbook_2026.md`: researched platform rules and editing practice (May–Oct 2026), with sources.
 - `references/EDL_SCHEMA.md`: EDL JSON for Shorts and trailer beats.
 - `scripts/resolve_and_snap.py`: utterance indices to snapped times, duration band and status flags.
 - `scripts/rank_candidates.py`: gates, weighted score, threshold, de-duplication, ranking and backups.

@@ -36,8 +36,8 @@ Give each dimension a 0–100 score. The weight is its share of the 100-point to
 | `standalone` | Standalone clarity and context | 0.15 (15) |
 | `payoff` | Story progression and payoff | 0.15 (15) |
 | `relevance` | Relevance to the target audience | 0.10 (10) |
-| `shareability` | Shareability and discussion potential | 0.10 (10) |
-| `editing` | Editing feasibility and visual storytelling potential | 0.10 (10) |
+| `shareability` | Shareability and discussion potential — would someone send it to a specific person? | 0.10 (10) |
+| `editing` | Editing feasibility and visual storytelling potential, incl. a clear added-value element | 0.10 (10) |
 
 Threshold: 60. Keep the top 15 at most. Clips that pass but fall outside the top N are returned as
 `backups` for Section G. Never add weak clips to reach a target count, and do not inflate scores.
@@ -84,7 +84,10 @@ For each candidate also record: strongest reason, main weakness or risk, works w
 - Flexible arc: cold open → curiosity → escalation → contrast → peak → open loop → episode identification → close.
 - Open loops come from real dialogue: stop a strong story before its resolution, never invent drama.
 - Music and sound sit below speech. Few effects: no random whooshes, and no transition over an important word.
-- Rearranged dialogue must not change a speaker's position. Mark every non-chronological beat.
+- Rearranged dialogue must not change a speaker's position. Mark every non-chronological beat, and make every
+  join visible so separate moments never play as one statement.
+- Nothing before the first line; show name after the first curiosity beat. Cold open under ~45 s; teaser 15–30 s.
+- Current practice and its evidence: `editing_playbook_2026.md`.
 
 ## 6. Language
 
