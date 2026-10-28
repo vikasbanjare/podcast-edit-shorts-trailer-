@@ -1,0 +1,25 @@
+{
+  "episode_title": "Example Podcast Episode",
+  "source_media": "input/episode.mp4",
+  "output_dir": "output",
+  "clips": [
+    {
+      "id": "short-01",
+      "title": "Example clip title",
+      "type": "short",
+      "start": 123.4,
+      "end": 168.9,
+      "verified": false,
+      "language": "Hinglish",
+      "speaker": "Guest",
+      "dialogue": "Replace with exact source dialogue",
+      "score": 80,
+      "aspect_ratio": "9:16",
+      "width": 1080,
+      "height": 1920,
+      "subtitle_file": null,
+      "burn_subtitles": false,
+      "notes": "Example only. Verify timecodes before final export."
+    }
+  ]
+}

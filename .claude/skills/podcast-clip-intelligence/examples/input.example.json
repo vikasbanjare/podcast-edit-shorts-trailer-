@@ -1,0 +1,10 @@
+{
+  "utterances": [
+    {"speaker": "Host", "words": [{"w": "Welcome", "s": 0.0, "e": 0.4}, {"w": "back.", "s": 0.5, "e": 0.9}]},
+    {"speaker": "Host", "words": [{"w": "Why", "s": 10.0, "e": 10.3}, {"w": "did", "s": 10.4, "e": 10.6}, {"w": "you", "s": 10.7, "e": 10.9}, {"w": "quit?", "s": 11.0, "e": 11.4}]},
+    {"speaker": "Guest", "words": [{"w": "Because", "s": 14.0, "e": 14.4}, {"w": "the", "s": 14.5, "e": 14.6}, {"w": "numbers", "s": 14.7, "e": 15.1}, {"w": "were", "s": 15.2, "e": 15.4}, {"w": "wrong.", "s": 15.5, "e": 15.9}]},
+    {"speaker": "Guest", "words": [{"w": "Nobody", "s": 22.0, "e": 22.4}, {"w": "else", "s": 22.5, "e": 22.7}, {"w": "would", "s": 22.8, "e": 23.0}, {"w": "say", "s": 23.1, "e": 23.3}, {"w": "it.", "s": 23.4, "e": 23.7}]}
+  ],
+  "silences": [[9.5, 9.9]],
+  "candidates": [{"id": "short-01", "title": "Why I quit", "start_utt": 1, "end_utt": 3}]
+}
