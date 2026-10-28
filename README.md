@@ -1,15 +1,34 @@
 # podcast-edit-shorts-trailer
 
-Claude Code skill for picking Shorts/Reels clips and a trailer from podcast transcripts
-(English, Hindi, Hinglish).
+Two Claude Code skills for turning podcast episodes (English, Hindi, Hinglish) into Shorts/Reels and trailers.
+Claude Code loads them automatically when this repository is open.
 
-The skill lives in [`.claude/skills/podcast-clip-intelligence/`](.claude/skills/podcast-clip-intelligence/SKILL.md),
-so Claude Code loads it automatically when this repository is open.
+## 1. `podcast-clip-intelligence`: pick the moments
+
+[`.claude/skills/podcast-clip-intelligence/`](.claude/skills/podcast-clip-intelligence/SKILL.md)
 
 - `SKILL.md`: workflow, honesty rules and output sections A–G
 - `references/editorial_brief.md`: the full editorial brief the skill follows
-- `references/rubric.md`, `references/EDL_SCHEMA.md`: 100-point rubric and the Shorts + trailer EDL format
+- `references/editing_playbook_2026.md`: researched platform rules and editing practice (May–Oct 2026), with sources
+- `references/rubric.md`, `references/EDL_SCHEMA.md`: 100-point rubric and the Shorts + trailers EDL format
 - `scripts/resolve_and_snap.py`: maps utterance-index candidates to snapped source times
-- `scripts/rank_candidates.py`: gates, weighted scoring, de-duplication and ranking
-- `tests/`: run with `python3 -m unittest discover -s .claude/skills/podcast-clip-intelligence/tests -v`
-- `NOTICE.md`: sources and licenses of the adapted rules
+- `scripts/rank_candidates.py`: gates, weighted scoring, de-duplication, ranking and backups
+- `scripts/render_ffmpeg.py`: ffmpeg fallback renderer for verified Shorts and trailers
+
+## 2. `premiere-podcast-cutter`: cut them in Premiere Pro
+
+[`.claude/skills/premiere-podcast-cutter/`](.claude/skills/premiere-podcast-cutter/SKILL.md)
+
+Give it the EDL and the name of your source sequence. It drives your Premiere Pro MCP server to create one
+named sequence per Short and per trailer, place frame-accurate ranges, add beat markers and reframe to 9:16.
+It reads every cut back to check it, and exports only when you approve.
+
+- `scripts/build_premiere_plan.py`: EDL to a named, frame-accurate cut plan (seconds, ticks, timecode)
+- `references/mcp_tool_map.md`: tool names for the known community Premiere MCP servers, plus an ExtendScript fallback
+
+## Tests
+
+```
+python3 -m unittest discover -s .claude/skills/podcast-clip-intelligence/tests -v
+python3 -m unittest discover -s .claude/skills/premiere-podcast-cutter/tests -v
+```
