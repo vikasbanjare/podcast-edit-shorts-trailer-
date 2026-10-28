@@ -35,13 +35,15 @@ Do not claim to have heard, watched or verified media you could not access.
    sections, and moments that need context. For long episodes, work in sections but keep one candidate log.
 3. **Propose candidates as utterance index ranges** (`start_utt`, `end_utt`), never seconds. Use windows of
    about 110 utterances overlapping by 20. Cover the six formats (curiosity hook, strong opinion, personal story,
-   educational, emotional/human, debate/tension). Aim for 8–15; return fewer if the material is weak.
+   educational, emotional/human, debate/tension). **No quota:** propose every moment that could stand alone and
+   let the gates and threshold decide. The brief's "about 8–15" is a typical range for a long episode, not a target;
+   a weak episode may give 2, a dense 3-hour one 25+. Never pad with weak clips or drop strong ones to hit a number.
 4. **Resolve and snap.** Run `scripts/resolve_and_snap.py`. It sets `start`, `end`, `duration_band`
    (short 15–30 / standard 30–60 / extended 60–90) and `status`. Fix or drop `too_short`, `too_long`, `invalid`.
    Extended clips must justify the length.
 5. **Score and gate.** For each candidate give the seven 0–100 scores and four gates in `references/rubric.md`,
    plus: strongest reason, main weakness, works-standalone yes/no, needed in/out tweaks, duplicate of, and
-   best use (short / trailer / both). Run `scripts/rank_candidates.py` (threshold 60, top 15). It returns
+   best use (short / trailer / both). Run `scripts/rank_candidates.py` (threshold 60, no cap unless the user sets `--top`). It returns
    `ranked`, `backups` (passed but beyond the top N) and `killed` (with reasons). Do not inflate scores.
 6. **Shape each Short.** Opening (strongest natural line — not automatically the first sentence), development
    (only the context needed), payoff, clean ending. Prefer a complete Short over an artificial cliffhanger.
@@ -55,7 +57,12 @@ Do not claim to have heard, watched or verified media you could not access.
    insight-led, conflict, documentary), recommend one. Flexible beat arc: cold open → curiosity → escalation →
    contrast → peak → open loop → episode ID → close. Suspense only from real dialogue. Nothing (logo, sting,
    swell) before the first line; show name after the first curiosity beat; drop music to silence before the key
-   line. Episode cold open (16:9) under ~45 s; vertical teaser 15–30 s. Offer both when the user wants several trailers.
+   line. Episode cold open (16:9) under ~45 s; vertical teaser 15–30 s.
+   **How many trailers is decided by the material, not a fixed number.** Count the distinct strong hooks and open
+   loops found in step 2. Usually there is one 16:9 episode cold open. Add a vertical teaser for each extra hook that
+   can carry its own 15–30 s without reusing the same key beats. One strong hook means one trailer (15–20 s). A
+   weak episode may justify only the cold open. In Section D, state the count and why (which hook drives each
+   trailer).
 8. **Write the trailer EDL** beat by beat in playback order with every field in `references/EDL_SCHEMA.md`
    (`trailer_beats`). Say where to cut hard, pause, build music, drop to silence, use reactions/punch-ins,
    place the title and the final beat. Flag non-chronological source material.
@@ -81,7 +88,7 @@ Do not claim to have heard, watched or verified media you could not access.
 ## Output sections
 
 **A** Episode intelligence (summary, themes, audience assumptions, storytelling opportunities, trailer narrative) ·
-**B** Executive shortlist table (rank, source timecode, title, core hook, category, est. duration, score, main reason) ·
+**B** Executive shortlist table, opened by one line stating how many Shorts and trailers the episode supports and why (rank, source timecode, title, core hook, category, est. duration, score, main reason) ·
 **C** Detailed Short candidates (ID/title, exact timecode, exact opening and closing dialogue, speaker, why it works,
 hook/development/payoff, final duration, opening cut, edit direction, subtitle/on-screen text, weakness/context risk,
 verification status) ·

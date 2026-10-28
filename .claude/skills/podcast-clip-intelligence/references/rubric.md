@@ -39,7 +39,9 @@ Give each dimension a 0–100 score. The weight is its share of the 100-point to
 | `shareability` | Shareability and discussion potential — would someone send it to a specific person? | 0.10 (10) |
 | `editing` | Editing feasibility and visual storytelling potential, incl. a clear added-value element | 0.10 (10) |
 
-Threshold: 60. Keep the top 15 at most. Clips that pass but fall outside the top N are returned as
+Threshold: 60. **There is no target count.** Every clip that passes the gates and the threshold is kept;
+an episode may yield 2 Shorts or 25. Cap the number only when the user asks (e.g. production capacity); clips
+that pass but fall outside that cap are returned as
 `backups` for Section G. Never add weak clips to reach a target count, and do not inflate scores.
 
 For each candidate also record: strongest reason, main weakness or risk, works without the full episode

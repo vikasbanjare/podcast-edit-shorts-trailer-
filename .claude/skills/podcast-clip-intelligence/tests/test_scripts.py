@@ -156,6 +156,13 @@ class RankTests(unittest.TestCase):
         self.assertEqual([c["id"] for c in res["backups"]], ["c0"])
         self.assertEqual(res["killed"], [])
 
+    def test_no_quota_by_default(self):
+        cands = [{"id": f"c{i}", "start": i * 100, "end": i * 100 + 30, "status": "ok",
+                  "scores": self.scores(70), "gates": self.gates()} for i in range(20)]
+        res = rank(cands)
+        self.assertEqual(len(res["ranked"]), 20)
+        self.assertEqual(res["backups"], [])
+
     def test_weights_match_brief_points(self):
         points = {k: round(v * 100) for k, v in WEIGHTS.items()}
         self.assertEqual(points, {"hook": 20, "curiosity": 20, "standalone": 15, "payoff": 15,

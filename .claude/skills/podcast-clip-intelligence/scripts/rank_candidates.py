@@ -14,7 +14,7 @@ Each candidate needs seven 0-100 scores and four boolean gates (see references/r
 }
 
 Output: {"ranked": [...], "backups": [...], "killed": [...]}. Backups passed every check but fell
-outside --top. Killed candidates keep their reasons so the honesty-gate log can be written.
+outside --top (no cap by default: every clip that passes is ranked). Killed candidates keep their reasons so the honesty-gate log can be written.
 Candidates without start/end (dialogue-anchor only) are ranked but skipped by the overlap check.
 """
 import argparse
@@ -32,7 +32,7 @@ WEIGHTS = {
 }
 GATES = ["honesty", "arc_complete", "standalone_context", "no_greeting_or_ad"]
 DEFAULT_THRESHOLD = 60.0
-DEFAULT_TOP = 15
+DEFAULT_TOP = None  # no quota: the material decides how many clips survive
 MAX_OVERLAP_RATIO = 0.5  # drop the lower-scored clip if this much of the shorter one overlaps
 
 
@@ -105,7 +105,7 @@ def main():
     ap.add_argument("input", help="JSON file with scored candidates")
     ap.add_argument("--threshold", type=float, default=DEFAULT_THRESHOLD)
     ap.add_argument("--top", type=int, default=DEFAULT_TOP,
-                    help=f"Maximum clips to rank; the rest become backups (default {DEFAULT_TOP})")
+                    help="Only when the user caps the count: rank this many, the rest become backups (default: no cap)")
     ap.add_argument("-o", "--output", help="Write output here (default: stdout)")
     args = ap.parse_args()
 
