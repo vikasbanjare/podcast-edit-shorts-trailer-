@@ -146,7 +146,7 @@ def build(edl, source, prefix, bin_name):
                        "width": c.get("width") or 1080, "height": c.get("height") or 1920})
     for n, t in enumerate(edl.get("trailers") or ([edl["trailer"]] if edl.get("trailer") else []), 1):
         beats = sorted(t.get("beats", []), key=lambda b: b["sequence"])
-        if any(b.get("start") is None for b in beats):
+        if not beats or any(b.get("start") is None or b.get("end") is None for b in beats):
             continue
         mark = "" if all(b.get("verified") is True for b in beats) else "_UNVERIFIED"
         trailers.append({"name": f"{prefix}_TRAILER_{n:02d}_{slug(t.get('concept') or t.get('id') or 'trailer')}{mark}",
