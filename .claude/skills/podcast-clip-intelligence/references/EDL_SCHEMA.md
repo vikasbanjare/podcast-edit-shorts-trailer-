@@ -1,6 +1,7 @@
 # Edit Decision List (EDL) schema
 
-Use UTF-8 JSON. Times are seconds from the start of the original source media.
+Use UTF-8 JSON. Source times are seconds from the start of the original source media.
+Final-edit times (`final_duration_s`, `final_in_s`) are positions in the finished edit and are kept separate.
 
 ```json
 {
@@ -12,35 +13,86 @@ Use UTF-8 JSON. Times are seconds from the start of the original source media.
       "id": "short-01",
       "title": "Candidate title",
       "type": "short",
+      "category": "personal_story",
       "start": 123.4,
-      "end": 168.9,
-      "verified": true,
+      "end": 148.9,
+      "duration_band": "short",
+      "verified": false,
+      "status": "ok",
+      "snap_notes": ["end extended to sentence end"],
       "language": "Hinglish",
       "speaker": "Guest",
       "dialogue": "Exact source dialogue",
-      "score": 86,
+      "dialogue_anchor": "searchable phrase from the opening line",
+      "score": 82.5,
       "aspect_ratio": "9:16",
       "width": 1080,
       "height": 1920,
       "subtitle_file": null,
       "burn_subtitles": false,
-      "notes": "Use a clean opening and preserve the full payoff."
+      "notes": "Open on the question; cut the restatement after the payoff."
     }
+  ],
+  "trailer": {
+    "concept": "mystery-driven",
+    "non_chronological": true,
+    "total_runtime_s": 42.0,
+    "beats": [
+      {
+        "sequence": 1,
+        "role": "cold_open",
+        "start": 812.3,
+        "end": 816.1,
+        "verified": false,
+        "speaker": "Guest",
+        "dialogue": "Exact source dialogue",
+        "audience_reaction": "Wait, what happened?",
+        "purpose": "Open on the stakes without the context",
+        "transition": "Hard cut on the last syllable",
+        "shot": "Tight on guest, no reframe",
+        "audio": "Silence under the line; low drone enters on the cut",
+        "on_screen_text": null,
+        "final_in_s": 0.0,
+        "final_duration_s": 3.8
+      }
+    ]
+  },
+  "honesty_log": [
+    {"id": "c7", "kill_reasons": ["gate failed: honesty"], "note": "Sarcastic aside; reads sincere out of context."}
   ]
 }
 ```
 
 ## Required fields
+
 - `source_media`: path to the source file.
-- `clips`: list of clips.
+- `clips`: list of clips (may be empty when only a trailer is delivered).
 - Each clip: `id`, `start`, `end`.
+- Use `trailer` for one trailer, or `trailers` (a list of the same objects, each with an `id`) for several,
+  e.g. a 16:9 episode cold open plus a 9:16 teaser.
+- Each trailer beat: `sequence`, `start`, `end`, `speaker`, `dialogue`, `final_duration_s`.
 
 ## Optional fields
-- `title`, `type`, `verified`, `language`, `speaker`, `dialogue`, `score`, `aspect_ratio`, `width`, `height`, `subtitle_file`, `burn_subtitles`, `notes`.
+
+- Clip: `title`, `type`, `category`, `duration_band`, `verified`, `status`, `snap_notes`, `language`, `speaker`,
+  `dialogue`, `dialogue_anchor`, `score`, `aspect_ratio`, `width`, `height`, `subtitle_file`, `burn_subtitles`, `notes`,
+  `added_value` (the original element added: context card, hook text, reaction cut…), `upload_title` (distinct per clip),
+  `caption_script` (`roman` / `devanagari` / `mixed`), `series` (YouTube Shorts Series name, if any).
+- Trailer: `id`, `concept`, `non_chronological`, `total_runtime_s`, `width`, `height` (e.g. 1080x1920 for a vertical teaser,
+  1920x1080 for the episode cold open).
+- Beat: `role` (`cold_open`, `curiosity`, `escalation`, `contrast`, `peak`, `open_loop`, `episode_id`, `close`),
+  `verified`, `audience_reaction`, `purpose`, `transition`, `shot`, `audio`, `on_screen_text`, `final_in_s`.
+- `honesty_log`: killed candidates with reasons, from `rank_candidates.py`.
 
 ## Rules
-- `start` and `end` are source-media seconds, not final-timeline positions.
+
+- `start` and `end` are source-media seconds, never final-timeline positions.
 - `end` must be greater than `start`.
+- When the source has no reliable timecodes, set `start`/`end` to `null`, fill `dialogue_anchor`, and keep `verified: false`.
 - Set `verified: true` only after checking against source media.
-- The renderer does not validate the semantic accuracy of the dialogue or whether the edit is misleading.
-- Subtitle files should be SRT or ASS files with timestamps relative to the clip, unless you adapt the renderer to offset source-timeline captions.
+- Trailer beats are listed in playback order. Set `non_chronological: true` when any beat comes from earlier in the
+  source than the beat before it.
+- A renderer does not validate the semantic accuracy of the dialogue or whether the edit is misleading.
+- Render with `scripts/render_ffmpeg.py` (verified items only; `--allow-unverified` writes `*_UNVERIFIED.mp4` previews)
+  or with the `premiere-podcast-cutter` skill.
+- Subtitle files should be SRT or ASS with timestamps relative to the clip, unless the renderer offsets source-timeline captions.

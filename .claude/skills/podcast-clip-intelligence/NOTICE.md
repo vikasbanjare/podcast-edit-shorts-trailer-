@@ -16,3 +16,9 @@ written for this skill, based on the ideas below.
 
 Repos without a license file (ClipRank, skill-autoshorts, viral-clip-editor-skill, lexiitong/skillclip, jperrello/shorts)
 were studied only for ideas. No text or code from them is included.
+
+## v3 changes
+
+The scoring weights (20/20/15/15/10/10/10), the 15–90 s duration bands, the 8–15 candidate target, the trailer
+beat structure and output Sections A–G come from the project owner's editorial brief
+(`references/editorial_brief.md`), and replace the corresponding v2 values above.

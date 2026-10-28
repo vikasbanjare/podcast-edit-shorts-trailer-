@@ -1,0 +1,96 @@
+{
+  "sequence": {
+    "name": "EP12 Multicam",
+    "frame_ticks": 10160640000,
+    "width": 1920,
+    "height": 1080
+  },
+  "video_tracks": [
+    {
+      "index": 0,
+      "name": "Cam A",
+      "clips": [
+        {
+          "name": "camA-1",
+          "start": 0,
+          "end": 300,
+          "in": 2.0,
+          "out": 302.0,
+          "project_item_id": "camA-1",
+          "media_path": "/m/camA_1.mp4"
+        },
+        {
+          "name": "camA-2",
+          "start": 300,
+          "end": 3600,
+          "in": 0.0,
+          "out": 3300.0,
+          "project_item_id": "camA-2",
+          "media_path": "/m/camA_2.mp4"
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "name": "Cam B",
+      "clips": [
+        {
+          "name": "camB",
+          "start": 0,
+          "end": 3600,
+          "in": 5.0,
+          "out": 3605.0,
+          "project_item_id": "camB",
+          "media_path": "/m/camB.mp4"
+        }
+      ]
+    }
+  ],
+  "audio_tracks": [
+    {
+      "index": 0,
+      "name": "Host mic",
+      "clips": [
+        {
+          "name": "host",
+          "start": 0,
+          "end": 3600,
+          "in": 1.0,
+          "out": 3601.0,
+          "project_item_id": "host",
+          "media_path": "/m/host.wav"
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "name": "Guest mic",
+      "clips": [
+        {
+          "name": "guest",
+          "start": 0,
+          "end": 3600,
+          "in": 1.0,
+          "out": 3601.0,
+          "project_item_id": "guest",
+          "media_path": "/m/guest.wav"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "name": "Mix (consolidated)",
+      "clips": [
+        {
+          "name": "mix",
+          "start": 0,
+          "end": 3600,
+          "in": 0.0,
+          "out": 3600.0,
+          "project_item_id": "mix",
+          "media_path": "/m/mix.wav"
+        }
+      ]
+    }
+  ]
+}
