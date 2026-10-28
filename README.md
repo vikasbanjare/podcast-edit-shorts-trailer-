@@ -30,6 +30,31 @@ It can also write an editable FCP7 XML you import into Premiere directly (File >
 - `examples/layout.example.json`: two cameras, two iso mics and a consolidated mix
 - `references/mcp_tool_map.md`: tool names for the known community Premiere MCP servers, plus an ExtendScript fallback
 
+## Set up any editing laptop (Mac or Windows)
+
+Run once per laptop (re-run any time to update):
+
+```
+# Mac
+curl -fsSL https://raw.githubusercontent.com/vikasbanjare/podcast-edit-shorts-trailer-/claude/new-session-sd91hc/setup/setup-mac.sh | bash
+# Windows (PowerShell): clone the repo, then
+powershell -ExecutionPolicy Bypass -File setup\setup-windows.ps1
+```
+
+The setup:
+- checks git, Python, Node 20+, Claude Code and ffmpeg;
+- clones or updates the skills;
+- keeps your existing Premiere MCP, or installs `adobe-premiere-pro-mcp` and registers it with Claude Code;
+- runs the tests.
+
+Each editing day:
+1. Open Premiere and start `Window > Extensions > MCP Bridge (CEP)`.
+2. In the repo folder, run `claude remote-control` (on Mac, `caffeinate -dimsu claude remote-control`, so it doesn't sleep).
+
+The laptop then appears in the Claude app, and a session can be started on whichever laptop is online.
+
+No MCP on a laptop? `premiere-podcast-cutter/scripts/export_xmeml.py` writes an XML you open with File > Import.
+
 ## Tests
 
 ```

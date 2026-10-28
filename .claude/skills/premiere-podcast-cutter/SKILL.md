@@ -20,6 +20,12 @@ tracks, in sync**, so the editor can switch angles, rebalance mics or swap to an
   muted, so nothing doubles or phases.
 - Camera scratch audio is never placed over the mic tracks (place video without its linked audio).
 
+## Setup on any laptop
+
+Every editing laptop (Mac or Windows) runs the one-time setup in `setup/` (see the repo README). It installs or keeps
+a Premiere MCP, registers it with Claude Code, and self-tests the scripts. On Windows, run the scripts below with
+`python` (or `py -3`) instead of `python3`. Before starting, confirm Premiere is open and its MCP bridge panel is running.
+
 ## End to end from just a sequence name
 
 When the user only names a sequence (for example "test-2 is the full podcast, find the best Shorts and make a
