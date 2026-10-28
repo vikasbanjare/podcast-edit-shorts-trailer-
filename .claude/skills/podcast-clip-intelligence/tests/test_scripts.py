@@ -74,7 +74,37 @@ class SnapTests(unittest.TestCase):
         utts = [{"speaker": "G", "words": words("यह पहला हिस्सा है।", 0.0)},
                 {"speaker": "G", "words": words("और यह दूसरा।", 5.0)}]
         out = snap_candidate({"id": "h", "start_utt": 0, "end_utt": 0}, utts, silences=[])
-        self.assertLessEqual(out["end"], 0.0 + 0.5 * 4 + 0.8 + 0.3 + 0.01)
+        self.assertNotIn("end extended to sentence end", out["snap_notes"])
+        self.assertAlmostEqual(out["end"], utts[0]["words"][-1]["e"] + 0.3, places=2)
+
+    def test_mid_sentence_end_is_extended(self):
+        utts = [{"speaker": "G", "words": words("this part has no ending", 0.0)},
+                {"speaker": "G", "words": words("until here.", 3.0)}]
+        out = snap_candidate({"id": "m", "start_utt": 0, "end_utt": 0}, utts, silences=[])
+        self.assertIn("end extended to sentence end", out["snap_notes"])
+        self.assertAlmostEqual(out["end"], utts[1]["words"][-1]["e"] + 0.3, places=2)
+
+    def test_sentence_end_inside_closing_quote(self):
+        utts = [{"speaker": "G", "words": words('he said "no way."', 0.0)},
+                {"speaker": "G", "words": words("next thought.", 2.5)}]
+        out = snap_candidate({"id": "q", "start_utt": 0, "end_utt": 0}, utts, silences=[])
+        self.assertNotIn("end extended to sentence end", out["snap_notes"])
+
+    def test_start_never_snaps_after_first_word(self):
+        utts = make_transcript()
+        out = snap_candidate({"id": "c1", "start_utt": 1, "end_utt": 3}, utts, silences=[[9.5, 10.05]])
+        self.assertLessEqual(out["start"], utts[1]["words"][0]["s"])
+
+    def test_duration_bands(self):
+        def band(seconds):
+            n = int(seconds / 0.5)
+            utts = [{"speaker": "A", "words": words(" ".join(["w"] * (n - 1) + ["end."]), 0.0)}]
+            return snap_candidate({"id": "b", "start_utt": 0, "end_utt": 0}, utts, silences=[])
+        self.assertEqual(band(20)["duration_band"], "short")
+        self.assertEqual(band(45)["duration_band"], "standard")
+        extended = band(80)
+        self.assertEqual(extended["duration_band"], "extended")
+        self.assertEqual(extended["status"], "ok")
 
 
 class RankTests(unittest.TestCase):
@@ -122,6 +152,19 @@ class RankTests(unittest.TestCase):
                           "scores": self.scores(val), "gates": self.gates()})
         res = rank(cands, top_n=2)
         self.assertEqual([c["id"] for c in res["ranked"]], ["c1", "c2"])
+        self.assertEqual([c["id"] for c in res["backups"]], ["c0"])
+        self.assertEqual(res["killed"], [])
+
+    def test_weights_match_brief_points(self):
+        points = {k: round(v * 100) for k, v in WEIGHTS.items()}
+        self.assertEqual(points, {"hook": 20, "curiosity": 20, "standalone": 15, "payoff": 15,
+                                  "relevance": 10, "shareability": 10, "editing": 10})
+
+    def test_candidate_without_timecodes_is_ranked(self):
+        cand = {"id": "anchor", "start": None, "end": None, "scores": self.scores(75), "gates": self.gates()}
+        other = {"id": "timed", "start": 0, "end": 30, "status": "ok", "scores": self.scores(80), "gates": self.gates()}
+        res = rank([cand, other])
+        self.assertEqual([c["id"] for c in res["ranked"]], ["timed", "anchor"])
 
 
 if __name__ == "__main__":

@@ -7,12 +7,17 @@
       "id": "short-01",
       "title": "Example clip title",
       "type": "short",
+      "category": "personal_story",
       "start": 123.4,
-      "end": 168.9,
+      "end": 148.9,
+      "duration_band": "short",
       "verified": false,
+      "status": "ok",
+      "snap_notes": [],
       "language": "Hinglish",
       "speaker": "Guest",
       "dialogue": "Replace with exact source dialogue",
+      "dialogue_anchor": "Replace with a searchable phrase from the opening line",
       "score": 80,
       "aspect_ratio": "9:16",
       "width": 1080,
@@ -21,5 +26,47 @@
       "burn_subtitles": false,
       "notes": "Example only. Verify timecodes before final export."
     }
-  ]
+  ],
+  "trailer": {
+    "concept": "mystery-driven",
+    "non_chronological": true,
+    "total_runtime_s": 7.6,
+    "beats": [
+      {
+        "sequence": 1,
+        "role": "cold_open",
+        "start": 812.3,
+        "end": 816.1,
+        "verified": false,
+        "speaker": "Guest",
+        "dialogue": "Replace with exact source dialogue",
+        "audience_reaction": "Curiosity about what happened",
+        "purpose": "Open on the stakes before the context",
+        "transition": "Hard cut on the last syllable",
+        "shot": "Tight on guest",
+        "audio": "No music under the line; low drone enters on the cut",
+        "on_screen_text": null,
+        "final_in_s": 0.0,
+        "final_duration_s": 3.8
+      },
+      {
+        "sequence": 2,
+        "role": "curiosity",
+        "start": 240.0,
+        "end": 243.8,
+        "verified": false,
+        "speaker": "Host",
+        "dialogue": "Replace with exact source dialogue",
+        "audience_reaction": "Wants the answer",
+        "purpose": "Pose the episode's central question",
+        "transition": "Leave a half-second pause, then cut",
+        "shot": "Wide two-shot",
+        "audio": "Drone continues under speech",
+        "on_screen_text": null,
+        "final_in_s": 3.8,
+        "final_duration_s": 3.8
+      }
+    ]
+  },
+  "honesty_log": []
 }

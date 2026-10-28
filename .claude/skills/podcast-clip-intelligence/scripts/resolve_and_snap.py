@@ -15,15 +15,19 @@ Input JSON:
 }
 
 Output JSON: {"candidates": [...]} with start, end, duration_s, status and snap_notes added.
-Status is "ok", "too_short" or "too_long". Nothing here sets verified=true; that needs an audio check.
+Status is "ok", "too_short" or "too_long"; duration_band is "short" (<=30 s),
+"standard" (<=60 s) or "extended" (<=90 s). Nothing here sets verified=true; that needs an audio check.
 """
 import argparse
 import json
 import sys
 
 SENTENCE_END = (".", "?", "!", "।")  # includes Devanagari danda for Hindi transcripts
+TRAILING_CLOSERS = "\"'”’)]"  # quotes/brackets that may follow the sentence mark
 MIN_DURATION = 15.0
-MAX_DURATION = 60.0
+MAX_DURATION = 90.0
+SHORT_MAX = 30.0
+STANDARD_MAX = 60.0
 START_PAD = 0.15
 END_PAD = 0.30
 SENTENCE_LOOKAHEAD = 3.0
@@ -31,7 +35,15 @@ SILENCE_LOOKBACK = 1.0
 
 
 def _is_sentence_end(word):
-    return word["w"].rstrip().endswith(SENTENCE_END)
+    return word["w"].rstrip().rstrip(TRAILING_CLOSERS).endswith(SENTENCE_END)
+
+
+def duration_band(duration):
+    if duration <= SHORT_MAX:
+        return "short"
+    if duration <= STANDARD_MAX:
+        return "standard"
+    return "extended"
 
 
 def snap_candidate(cand, utterances, silences):
@@ -53,10 +65,10 @@ def snap_candidate(cand, utterances, silences):
     # Flatten words after the first word so we can look ahead for a sentence end.
     all_words = [w for u in utterances[s_idx:e_idx + 1] for w in u["words"]]
 
-    # --- start: prefer the end of a silence that sits just before the first word ---
+    # --- start: prefer the end of a silence that ends just before the first word ---
     start = first["s"] - START_PAD
     for s0, s1 in silences:
-        if first["s"] - SILENCE_LOOKBACK <= s1 <= first["s"] + 0.1:
+        if first["s"] - SILENCE_LOOKBACK <= s1 <= first["s"]:
             start = s1
             notes.append("start snapped to silence end")
             break
@@ -97,6 +109,7 @@ def snap_candidate(cand, utterances, silences):
         "end": round(end, 2),
         "duration_s": round(duration, 2),
         "status": status,
+        "duration_band": duration_band(duration),
         "snap_notes": notes,
         "word_count": len(all_words),
     })
