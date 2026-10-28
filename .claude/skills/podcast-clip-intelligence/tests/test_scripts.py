@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.join(HERE, "..", "scripts"))
 
 from resolve_and_snap import resolve_all, snap_candidate  # noqa: E402
 from rank_candidates import rank, weighted_score, WEIGHTS  # noqa: E402
+from render_ffmpeg import plan, cut_command, commands_for  # noqa: E402
 
 
 def words(text, start, step=0.5):
@@ -165,6 +166,48 @@ class RankTests(unittest.TestCase):
         other = {"id": "timed", "start": 0, "end": 30, "status": "ok", "scores": self.scores(80), "gates": self.gates()}
         res = rank([cand, other])
         self.assertEqual([c["id"] for c in res["ranked"]], ["timed", "anchor"])
+
+
+class RenderPlanTests(unittest.TestCase):
+    def edl(self):
+        return {"source_media": "src.mp4", "output_dir": "out", "clips": [
+            {"id": "ok", "start": 1, "end": 20, "verified": True},
+            {"id": "unv", "start": 1, "end": 20, "verified": False},
+            {"id": "anchor", "start": None, "end": None, "verified": True}],
+            "trailer": {"beats": [
+                {"sequence": 2, "start": 50, "end": 53, "verified": True},
+                {"sequence": 1, "start": 10, "end": 14, "verified": True}]}}
+
+    def test_only_verified_items_render(self):
+        jobs, skipped = plan(self.edl())
+        self.assertEqual([j["id"] for j in jobs], ["ok", "trailer-01"])
+        self.assertEqual(dict(skipped)["unv"], "not verified")
+        self.assertIn("anchor", dict(skipped))
+
+    def test_unverified_preview_is_labelled(self):
+        jobs, _ = plan(self.edl(), allow_unverified=True)
+        self.assertTrue(next(j for j in jobs if j["id"] == "unv")["out"].endswith("_UNVERIFIED.mp4"))
+
+    def test_trailer_beats_follow_playback_order(self):
+        jobs, _ = plan(self.edl())
+        trailer = next(j for j in jobs if j["kind"] == "trailer")
+        self.assertEqual([p["start"] for p in trailer["parts"]], [10, 50])
+        cmds = commands_for(trailer, "src.mp4", "/tmp/w")
+        self.assertEqual(len(cmds), 3)
+        self.assertIn("concat", cmds[-1])
+
+    def test_unverified_beat_blocks_trailer(self):
+        edl = self.edl()
+        edl["trailer"]["beats"][0]["verified"] = False
+        jobs, skipped = plan(edl)
+        self.assertNotIn("trailer-01", [j["id"] for j in jobs])
+
+    def test_cut_command_reframes_and_rejects_bad_range(self):
+        cmd = cut_command("src.mp4", 2.0, 5.5, "o.mp4", 1080, 1920)
+        self.assertEqual(cmd[cmd.index("-t") + 1], "3.500")
+        self.assertIn("scale=1080:1920", cmd[cmd.index("-vf") + 1])
+        with self.assertRaises(ValueError):
+            cut_command("src.mp4", 5, 5, "o.mp4")
 
 
 if __name__ == "__main__":

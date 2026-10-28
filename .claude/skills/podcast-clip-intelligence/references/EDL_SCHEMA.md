@@ -68,13 +68,16 @@ Final-edit times (`final_duration_s`, `final_in_s`) are positions in the finishe
 - `source_media`: path to the source file.
 - `clips`: list of clips (may be empty when only a trailer is delivered).
 - Each clip: `id`, `start`, `end`.
-- Each trailer beat (when `trailer` is present): `sequence`, `start`, `end`, `speaker`, `dialogue`, `final_duration_s`.
+- Use `trailer` for one trailer, or `trailers` (a list of the same objects, each with an `id`) for several,
+  e.g. a 16:9 episode cold open plus a 9:16 teaser.
+- Each trailer beat: `sequence`, `start`, `end`, `speaker`, `dialogue`, `final_duration_s`.
 
 ## Optional fields
 
 - Clip: `title`, `type`, `category`, `duration_band`, `verified`, `status`, `snap_notes`, `language`, `speaker`,
   `dialogue`, `dialogue_anchor`, `score`, `aspect_ratio`, `width`, `height`, `subtitle_file`, `burn_subtitles`, `notes`.
-- Trailer: `concept`, `non_chronological`, `total_runtime_s`.
+- Trailer: `id`, `concept`, `non_chronological`, `total_runtime_s`, `width`, `height` (e.g. 1080x1920 for a vertical teaser,
+  1920x1080 for the episode cold open).
 - Beat: `role` (`cold_open`, `curiosity`, `escalation`, `contrast`, `peak`, `open_loop`, `episode_id`, `close`),
   `verified`, `audience_reaction`, `purpose`, `transition`, `shot`, `audio`, `on_screen_text`, `final_in_s`.
 - `honesty_log`: killed candidates with reasons, from `rank_candidates.py`.
@@ -88,4 +91,6 @@ Final-edit times (`final_duration_s`, `final_in_s`) are positions in the finishe
 - Trailer beats are listed in playback order. Set `non_chronological: true` when any beat comes from earlier in the
   source than the beat before it.
 - A renderer does not validate the semantic accuracy of the dialogue or whether the edit is misleading.
+- Render with `scripts/render_ffmpeg.py` (verified items only; `--allow-unverified` writes `*_UNVERIFIED.mp4` previews)
+  or with the `premiere-podcast-cutter` skill.
 - Subtitle files should be SRT or ASS with timestamps relative to the clip, unless the renderer offsets source-timeline captions.

@@ -56,7 +56,9 @@ Do not claim to have heard, watched or verified media you could not access.
 9. **Verify.** Per range: start word not mid-thought, first audible word, sentence ending, dialogue matches,
    speaker attribution and overlap, ~5 s context each side. Label VERIFIED or UNVERIFIED. Never write
    `verified: true` without the media check.
-10. **Render only what is verified**, with the user's renderer or NLE. Never publish or upload without explicit approval.
+10. **Render only what is verified.** In Premiere Pro, hand the EDL to the `premiere-podcast-cutter` skill. Without Premiere,
+    run `scripts/render_ffmpeg.py edl.json` (add `--allow-unverified` only for labelled previews). Report failures and QC
+    warnings. Never publish or upload without explicit approval.
 
 ## Honesty and safety rules
 
@@ -95,5 +97,6 @@ Keep exact dialogue separate from editorial on-screen text.
 - `references/EDL_SCHEMA.md`: EDL JSON for Shorts and trailer beats.
 - `scripts/resolve_and_snap.py`: utterance indices to snapped times, duration band and status flags.
 - `scripts/rank_candidates.py`: gates, weighted score, threshold, de-duplication, ranking and backups.
+- `scripts/render_ffmpeg.py`: ffmpeg fallback renderer for verified Shorts and trailers (9:16 centre crop, beat concat).
 - `tests/test_scripts.py`: synthetic tests (`python3 -m unittest discover -s tests -v`).
 - `NOTICE.md`: where adapted rules came from and their licenses.
