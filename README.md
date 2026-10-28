@@ -35,10 +35,10 @@ It can also write an editable FCP7 XML you import into Premiere directly (File >
 Run once per laptop (re-run any time to update):
 
 ```
-# Mac
-curl -fsSL https://raw.githubusercontent.com/vikasbanjare/podcast-edit-shorts-trailer-/claude/new-session-sd91hc/setup/setup-mac.sh | bash
-# Windows (PowerShell): clone the repo, then
-powershell -ExecutionPolicy Bypass -File setup\setup-windows.ps1
+git clone -b claude/new-session-sd91hc https://github.com/vikasbanjare/podcast-edit-shorts-trailer-.git
+cd podcast-edit-shorts-trailer-
+bash setup/setup-mac.sh                                    # Mac
+powershell -ExecutionPolicy Bypass -File setup\setup-windows.ps1   # Windows
 ```
 
 The setup:
