@@ -2,13 +2,14 @@
 # One-time setup of a Mac editing laptop for the podcast skills.
 # Safe to re-run: it updates what exists and only installs what is missing.
 #
-#   bash setup/setup-mac.sh            # repo goes to ~/podcast-edit-shorts-trailer-
+#   bash setup/setup-mac.sh            # from inside a clone: updates that clone
 #   bash setup/setup-mac.sh ~/Work/pod # or choose the folder
 set -euo pipefail
 
 REPO_URL="https://github.com/vikasbanjare/podcast-edit-shorts-trailer-.git"
 BRANCH="${BRANCH:-claude/new-session-sd91hc}"
-DEST="${1:-$HOME/podcast-edit-shorts-trailer-}"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." 2>/dev/null && pwd)"
+if [ -z "${1:-}" ] && [ -d "$HERE/.git" ]; then DEST="$HERE"; else DEST="${1:-$HOME/podcast-edit-shorts-trailer-}"; fi
 
 say()  { printf '\n\033[1m%s\033[0m\n' "$*"; }
 ok()   { printf '  ✓ %s\n' "$*"; }

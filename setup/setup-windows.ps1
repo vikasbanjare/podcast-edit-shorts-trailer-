@@ -3,7 +3,7 @@
 #
 #   powershell -ExecutionPolicy Bypass -File setup\setup-windows.ps1
 #   powershell -ExecutionPolicy Bypass -File setup\setup-windows.ps1 -Dest D:\Work\pod
-param([string]$Dest = "$HOME\podcast-edit-shorts-trailer-",
+param([string]$Dest = $(if (Test-Path "$PSScriptRoot\..\.git") { (Resolve-Path "$PSScriptRoot\..").Path } else { "$HOME\podcast-edit-shorts-trailer-" }),
       [string]$Branch = "claude/new-session-sd91hc")
 $ErrorActionPreference = "Stop"
 $RepoUrl = "https://github.com/vikasbanjare/podcast-edit-shorts-trailer-.git"
